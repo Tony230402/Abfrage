@@ -189,9 +189,10 @@
   function startSession() {
     correct = 0;
     total = 0;
-    sessionQuestions = allQuestions.filter(q => !completedQuestions.includes(q));
+    completedQuestions = []; // Leeren der bereits beantworteten Fragen
+    sessionQuestions = allQuestions.slice(); // Neue Fragenmischung
     shuffleArray(sessionQuestions);
-    sessionQuestions = sessionQuestions.slice(0, 30);
+    sessionQuestions = sessionQuestions.slice(0, 30); // Ziehe die ersten 30 Fragen
     loadNext();
     // Alle vorherigen Buttons und Fragelisten entfernen
     document.getElementById('showFullListBtn').style.display = 'block';
@@ -273,12 +274,10 @@
         <tr>
           <td>${index + 1}</td>
           <td>${question.q}</td>
-        </tr>`;
+        </tr>
+      `;
     });
-
     document.getElementById('questionListContent').innerHTML = questionListContent;
-    // Vollständige Frageliste Button entfernen
-    document.getElementById('showFullListBtn').style.display = 'none';
   }
 
   function startQuizFromList() {
@@ -287,6 +286,7 @@
     startSession();
   }
 
+  // Hilfsfunktionen
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));

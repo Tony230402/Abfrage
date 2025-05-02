@@ -173,7 +173,7 @@
     { q: "Darf die Bache mit Frischlingen ganzjährig bejagt werden?", a: false },
     { q: "Gehört der Waschbär zum Haarwild?", a: true },
     { q: "Hat der Feldhase ein Winterfell?", a: false },
-    { q: "Sind Schnepfen Zugvögel?", a: true }
+    { q: "Sind Schnepfen bsksnskZugvögel?", a: true }
   ];
 
   let correct = 0;
@@ -197,7 +197,7 @@
   }
 
   function startSession() {
-    sessionQuestions = [...allQuestions];
+    sessionQuestions = allQuestions.map((question, index) => ({ ...question, originalIndex: index + 1 }));
     shuffleArray(sessionQuestions);
     total = 0;
     correct = 0;
@@ -209,12 +209,8 @@
     if (total < sessionQuestions.length) {
       const question = sessionQuestions[total];
       document.getElementById('question').textContent = question.q;
-      document.getElementById('counter').textContent = `Frage ${total + 1} von 30`;
-      
-      // Use the original question index to show the correct question number
-      const originalIndex = originalIndexes[total];
-      document.getElementById('questionNumber').textContent = `Frage: ${originalIndex}`; // Zeigt die Frage entsprechend ihrer ursprünglichen Position im Code an.
-      
+      document.getElementById('counter').textContent = `Frage ${total + 1} von ${sessionQuestions.length}`;
+      document.getElementById('questionNumber').textContent = `Frage: ${question.originalIndex}`; 
     } else {
       showResult();
     }
@@ -231,11 +227,11 @@
   }
 
   function showResult() {
-    const percent = Math.round((correct / 30) * 100);
+    const percent = Math.round((correct / sessionQuestions.length) * 100);
     document.getElementById('quiz').style.display = 'none';
     document.getElementById('result').style.display = 'block';
     const ctx = document.getElementById('chart').getContext('2d');
-    const correctAngle = (correct / 30) * (2 * Math.PI);
+    const correctAngle = (correct / sessionQuestions.length) * (2 * Math.PI);
     ctx.clearRect(0, 0, 250, 250);
     ctx.beginPath();
     ctx.fillStyle = '#4CAF50';
@@ -253,7 +249,7 @@
     ctx.fillStyle = '#000';
     ctx.font = '18px Arial';
     ctx.fillText(`${percent}%`, 125 - ctx.measureText(`${percent}%`).width / 2, 130);
-    document.getElementById('summary').textContent = `Du hast ${correct} von 30 Fragen richtig beantwortet.`;
+    document.getElementById('summary').textContent = `Du hast ${correct} von ${sessionQuestions.length} Fragen richtig beantwortet.`;
   }
 
   function restartSession() {
@@ -293,6 +289,5 @@
     }
   }
 </script>
-
 </body>
 </html>

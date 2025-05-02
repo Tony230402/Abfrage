@@ -103,6 +103,8 @@
     <h2 id="question">Frage wird geladen...</h2>
     <button onclick="answer(true)">Richtig</button>
     <button onclick="answer(false)">Falsch</button>
+    <!-- Vollständige Frageliste Button nur im Quiz-Bereich -->
+    <button id="showFullListBtn" onclick="showFullList()">Vollständige Frageliste</button>
   </div>
 
   <!-- Auswertung -->
@@ -112,9 +114,6 @@
     <p id="summary"></p>
     <button onclick="restartSession()">Wiederholung starten</button>
   </div>
-
-  <!-- Vollständige Frageliste Button (unterhalb der Karteikarte) -->
-  <button id="showFullListBtn" onclick="showFullList()" style="display:none;">Vollständige Frageliste</button>
 
   <!-- Vollständige Frageliste Seite -->
   <div id="questionListPage" class="fullscreen-container">

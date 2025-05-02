@@ -193,6 +193,10 @@
     shuffleArray(sessionQuestions);
     sessionQuestions = sessionQuestions.slice(0, 30);
     loadNext();
+    // Alle vorherigen Buttons und Fragelisten entfernen
+    document.getElementById('showFullListBtn').style.display = 'block';
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('questionListPage').style.display = 'none';
   }
 
   function loadNext() {
@@ -253,6 +257,7 @@
   }
 
   function restartSession() {
+    // Alle vorherigen Buttons und Fragelisten entfernen
     document.getElementById('result').style.display = 'none';
     document.getElementById('quiz').style.display = 'block';
     startSession();
@@ -272,6 +277,8 @@
     });
 
     document.getElementById('questionListContent').innerHTML = questionListContent;
+    // Vollständige Frageliste Button entfernen
+    document.getElementById('showFullListBtn').style.display = 'none';
   }
 
   function startQuizFromList() {

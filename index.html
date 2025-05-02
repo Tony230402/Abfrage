@@ -100,7 +100,7 @@
 
 <script>
   const correctPassword = "waschbärpenis123";
-  const questions = [
+  const allQuestions = [
     { q: "Abzugseinrichtung mit Bauteilen erklären. Welche Arten von Abzügen gibt es?", a: true },
   { q: "Abzugsmechanismus erklären. Welcher ist der sicherste?", a: true },
   { q: "Anhand von einem Bild Läufe (Laufanordnungen) erkennen und die Waffen benennen.", a: true },
@@ -487,7 +487,7 @@
   function startSession() {
     correct = 0;
     total = 0;
-    sessionQuestions = [...questions];
+    sessionQuestions = [...allQuestions];
     shuffleArray(sessionQuestions);
     sessionQuestions = sessionQuestions.slice(0, 30);
     loadNext();

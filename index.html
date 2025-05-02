@@ -173,7 +173,7 @@
     { q: "Darf die Bache mit Frischlingen ganzjährig bejagt werden?", a: false },
     { q: "Gehört der Waschbär zum Haarwild?", a: true },
     { q: "Hat der Feldhase ein Winterfell?", a: false },
-    { q: "Sind Schnepfen kslsksZugvögel?", a: true }
+    { q: "Sind Schnepfen Zugvögel?", a: true }
   ];
 
   let correct = 0;
@@ -212,7 +212,7 @@
       const question = sessionQuestions[total];
       document.getElementById('question').textContent = question.q;
       document.getElementById('counter').textContent = `Frage ${total + 1} von 30`;
-      document.getElementById('questionNumber').textContent = `Frage: ${total + 1}`; // Anzeige der Frage Nummer
+      document.getElementById('questionNumber').textContent = `Frage: ${sessionQuestions.indexOf(question) + 1}`; // Anzeige der Frage Nummer basierend auf der Position im ursprünglichen Array
     } else {
       showResult();
     }
@@ -223,6 +223,7 @@
     if (isCorrect === question.a) {
       correct++;
     }
+    completedQuestions.push(question); // Markiere diese Frage als beantwortet
     total++;
     loadNext();
   }
@@ -266,7 +267,7 @@
 
   function showQuestions() {
     let questionListContent = '';
-    sessionQuestions.forEach((question, index) => {
+    allQuestions.forEach((question, index) => {
       questionListContent += `
         <tr>
           <td>${index + 1}</td>

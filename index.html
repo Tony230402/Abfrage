@@ -2,105 +2,151 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Lernseite</title>
+  <title>Jagd Lernseite</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
-    #login, #quiz, #result { display: none; }
-    .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    button { padding: 10px 20px; margin: 10px; font-size: 16px; }
-    #counter { position: absolute; top: 20px; right: 20px; font-weight: bold; }
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #eef0f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #3e8e41;
+      color: white;
+    }
+    button:nth-of-type(2) {
+      background-color: #d9534f;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    #counter {
+      text-align: right;
+      font-weight: bold;
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+    canvas {
+      margin: 20px auto;
+      display: block;
+    }
   </style>
 </head>
 <body>
 
-<div id="login" class="card">
-  <h2>Passwortgeschützt</h2>
-  <input type="password" id="password" placeholder="Passwort eingeben">
-  <button onclick="checkPassword()">Einloggen</button>
-</div>
+<div class="container">
+  <div id="login" class="card">
+    <h2>Passwort eingeben</h2>
+    <input type="password" id="password" placeholder="Passwort">
+    <button onclick="checkPassword()">Einloggen</button>
+  </div>
 
-<div id="quiz" class="card">
-  <div id="counter">Richtig: 0 / 30</div>
-  <h2 id="question">Frage wird geladen...</h2>
-  <button onclick="answer(true)">Richtig</button>
-  <button onclick="answer(false)">Falsch</button>
-</div>
+  <div id="quiz" class="card" style="display:none;">
+    <div id="counter">Richtig: 0 von 30</div>
+    <h2 id="question">Frage wird geladen...</h2>
+    <button onclick="answer(true)">Richtig</button>
+    <button onclick="answer(false)">Falsch</button>
+  </div>
 
-<div id="result" class="card">
-  <h2>Auswertung</h2>
-  <canvas id="chart" width="300" height="300"></canvas>
-  <p id="summary"></p>
+  <div id="result" class="card" style="display:none;">
+    <h2>Auswertung</h2>
+    <canvas id="chart" width="250" height="250"></canvas>
+    <p id="summary"></p>
+  </div>
 </div>
 
 <script>
-  // Passwortprüfung
   const correctPassword = "waschbärpenis123";
-  document.getElementById('login').style.display = 'block';
+  const questions = [
+    { q: "Ist das Rehwild ein Wiederkäuer?", a: true },
+    { q: "Beginnt die Blattzeit des Rehbocks im März?", a: false },
+    { q: "Hat der Feldhase eine größere Fluchtdistanz als das Kaninchen?", a: true },
+    { q: "Ist der Rothirsch ein Einzelgänger?", a: false },
+    { q: "Gehört der Dachs zur Ordnung der Raubtiere?", a: true },
+    { q: "Wird der Rehbock in Deutschland ganzjährig bejagt?", a: false },
+    { q: "Führt der Fuchs seine Jungen in einem Bau?", a: true },
+    { q: "Ist die Wildente ein Standvogel?", a: false },
+    { q: "Wird das Muffelwild zu den Schalenwildarten gezählt?", a: true },
+    { q: "Hat das Schwarzwild keine festen Setzzeiten?", a: true },
+    { q: "Ist das Auerhuhn ein Zugvogel?", a: false },
+    { q: "Gehören Marderhunde zum heimischen Wild?", a: false },
+    { q: "Hat der Uhu Federohren?", a: true },
+    { q: "Ist das Reh das weibliche Wildschwein?", a: false },
+    { q: "Ist der Keiler das männliche Wildschwein?", a: true },
+    { q: "Kann der Birkhahn fliegen?", a: true },
+    { q: "Ist die Losung vom Dachs scharfkantig?", a: false },
+    { q: "Trägt das Reh ein Geweih?", a: false },
+    { q: "Sind Kaninchen Nestflüchter?", a: false },
+    { q: "Hat der Rothirsch ein Geweih?", a: true },
+    { q: "Beginnt die Jagdzeit auf den Rehbock im Mai?", a: true },
+    { q: "Wird Wild bei der Pirschjagd vom Hochsitz aus geschossen?", a: false },
+    { q: "Ist das Murmeltier in ganz Deutschland heimisch?", a: false },
+    { q: "Besteht das Geweih des Hirsches aus Knochen?", a: true },
+    { q: "Ist das Wildschwein ein Allesfresser?", a: true },
+    { q: "Ist die Ranzzeit des Fuchses im Januar?", a: true },
+    { q: "Darf die Bache mit Frischlingen ganzjährig bejagt werden?", a: false },
+    { q: "Gehört der Waschbär zum Haarwild?", a: true },
+    { q: "Hat der Feldhase ein Winterfell?", a: false },
+    { q: "Sind Schnepfen Zugvögel?", a: true }
+  ];
+
+  let current = 0;
+  let correct = 0;
 
   function checkPassword() {
     const input = document.getElementById('password').value;
     if (input === correctPassword) {
       document.getElementById('login').style.display = 'none';
       document.getElementById('quiz').style.display = 'block';
-      loadNextQuestion();
+      loadNext();
     } else {
-      alert("Falsches Passwort!");
+      alert("Falsches Passwort.");
     }
   }
 
-  // Fragen (jährlicher Bezug)
-  const questions = [
-    { q: "Ist der Januar der kälteste Monat in Deutschland?", a: true },
-    { q: "Findet Ostern immer im März statt?", a: false },
-    { q: "Blühen Kirschbäume typischerweise im April?", a: true },
-    { q: "Gibt es in Deutschland im Juli typischerweise Schnee?", a: false },
-    { q: "Ist der Dezember ein Wintermonat?", a: true },
-    { q: "Beginnt der Herbst im Mai?", a: false },
-    { q: "Ist der Juni der längste Tag des Jahres?", a: true },
-    { q: "Fallen im September die meisten Blätter?", a: true },
-    { q: "Gibt es im August regelmäßig Nachtfrost?", a: false },
-    { q: "Findet der Nikolaustag im November statt?", a: false },
-    { q: "Ist der Oktober für seine bunten Blätter bekannt?", a: true },
-    { q: "Ist Weihnachten im Juni?", a: false },
-    { q: "Kann es im März schon frühlingshaft sein?", a: true },
-    { q: "Beginnt der Winter im August?", a: false },
-    { q: "Werden im April oft Schauerwetter beobachtet?", a: true },
-    { q: "Ist der Mai ein typischer Monat für Spargel?", a: true },
-    { q: "Gibt es im Februar meist viele Sonnenstunden?", a: false },
-    { q: "Ist der November oft neblig?", a: true },
-    { q: "Sind Sommertage typisch für den Oktober?", a: false },
-    { q: "Fällt Silvester auf den 31. Dezember?", a: true },
-    { q: "Liegt der meteorologische Herbstbeginn im September?", a: true },
-    { q: "Sind im Juli viele Festivals?", a: true },
-    { q: "Ist der März Teil des Winters?", a: true },
-    { q: "Geht die Sonne im Juni besonders früh auf?", a: true },
-    { q: "Ist der April besonders trocken?", a: false },
-    { q: "Finden im Dezember oft Weihnachtsmärkte statt?", a: true },
-    { q: "Gibt es im Mai keinen Regen?", a: false },
-    { q: "Sind die Nächte im Januar sehr kurz?", a: false },
-    { q: "Beginnt der Frühling im März?", a: true },
-    { q: "Hat der Februar immer 29 Tage?", a: false },
-  ];
-
-  let currentIndex = 0;
-  let correct = 0;
-  let total = 0;
-
-  function loadNextQuestion() {
-    if (total >= 30) {
+  function loadNext() {
+    if (current >= 30) {
       showResult();
       return;
     }
-
-    const question = questions[total];
-    document.getElementById("question").textContent = question.q;
-    document.getElementById("counter").textContent = `Richtig: ${correct} / 30`;
+    document.getElementById('question').textContent = questions[current].q;
+    document.getElementById('counter').textContent = `Richtig: ${correct} von 30`;
   }
 
   function answer(userAnswer) {
-    if (questions[total].a === userAnswer) correct++;
-    total++;
-    loadNextQuestion();
+    if (questions[current].a === userAnswer) correct++;
+    current++;
+    loadNext();
   }
 
   function showResult() {
@@ -108,31 +154,28 @@
     document.getElementById('result').style.display = 'block';
 
     const percent = Math.round((correct / 30) * 100);
-    document.getElementById('summary').textContent =
+    document.getElementById('summary').textContent = 
       `Du hast ${correct} von 30 Fragen richtig beantwortet (${percent}%).`;
 
-    // Kreisdiagramm
-    const canvas = document.getElementById("chart");
-    const ctx = canvas.getContext("2d");
-    const radius = 100;
-    const cx = canvas.width / 2;
-    const cy = canvas.height / 2;
-
-    // Zeichne korrekt
+    const ctx = document.getElementById('chart').getContext('2d');
     const correctAngle = (correct / 30) * 2 * Math.PI;
-    ctx.fillStyle = "#4caf50";
+
+    ctx.clearRect(0, 0, 250, 250);
+
+    // Richtig (grün)
     ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, radius, 0, correctAngle);
-    ctx.lineTo(cx, cy);
+    ctx.fillStyle = '#4caf50';
+    ctx.moveTo(125, 125);
+    ctx.arc(125, 125, 100, 0, correctAngle);
+    ctx.lineTo(125, 125);
     ctx.fill();
 
-    // Zeichne falsch
-    ctx.fillStyle = "#f44336";
+    // Falsch (rot)
     ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.arc(cx, cy, radius, correctAngle, 2 * Math.PI);
-    ctx.lineTo(cx, cy);
+    ctx.fillStyle = '#f44336';
+    ctx.moveTo(125, 125);
+    ctx.arc(125, 125, 100, correctAngle, 2 * Math.PI);
+    ctx.lineTo(125, 125);
     ctx.fill();
   }
 </script>

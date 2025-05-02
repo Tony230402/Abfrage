@@ -173,7 +173,7 @@
     { q: "Darf die Bache mit Frischlingen ganzjährig bejagt werden?", a: false },
     { q: "Gehört der Waschbär zum Haarwild?", a: true },
     { q: "Hat der Feldhase ein Winterfell?", a: false },
-    { q: "Sind Schnepfen Zugvögeldkdkdkd?", a: true }
+    { q: "Sind Schnepfen Zugvögel?", a: true }
   ];
 
   let correct = 0;
@@ -208,11 +208,11 @@
   }
 
   function loadNext() {
-    if (total < 30) {
+    if (total < sessionQuestions.length) {
       const question = sessionQuestions[total];
       document.getElementById('question').textContent = question.q;
       document.getElementById('counter').textContent = `Frage ${total + 1} von 30`;
-      document.getElementById('questionNumber').textContent = `Frage: ${total + 1}`; // Nummer in Karteikarte anzeigen
+      document.getElementById('questionNumber').textContent = `Frage: ${total + 1}`; // Zeigt die Frage entsprechend ihrer ursprünglichen Position
     } else {
       showResult();
     }

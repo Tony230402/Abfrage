@@ -180,31 +180,29 @@
   let total = 0;
   let sessionQuestions = [];
   let completedQuestions = [];
+  
+  // Mapping to store the original indices of the questions
+  let originalIndexes = allQuestions.map((question, index) => index + 1); 
 
   function checkPassword() {
     const input = document.getElementById('password').value;
     if (input === correctPassword) {
       document.getElementById('login').style.display = 'none';
       document.getElementById('quiz').style.display = 'block';
-      document.getElementById('showFullListBtn').style.display = 'block'; // Zeige den Button
+      document.getElementById('showFullListBtn').style.display = 'block';
       startSession();
     } else {
-      alert("Falsches Passwort.");
+      alert("Falsches Passwort");
     }
   }
 
   function startSession() {
-    correct = 0;
-    total = 0;
-    completedQuestions = []; // Leeren der bereits beantworteten Fragen
-    sessionQuestions = allQuestions.slice(); // Neue Fragenmischung
+    sessionQuestions = [...allQuestions];
     shuffleArray(sessionQuestions);
-    sessionQuestions = sessionQuestions.slice(0, 30); // Ziehe die ersten 30 Fragen
+    total = 0;
+    correct = 0;
+    completedQuestions = [];
     loadNext();
-    // Alle vorherigen Buttons und Fragelisten entfernen
-    document.getElementById('showFullListBtn').style.display = 'block';
-    document.getElementById('result').style.display = 'none';
-    document.getElementById('questionListPage').style.display = 'none';
   }
 
   function loadNext() {
@@ -212,7 +210,11 @@
       const question = sessionQuestions[total];
       document.getElementById('question').textContent = question.q;
       document.getElementById('counter').textContent = `Frage ${total + 1} von 30`;
-      document.getElementById('questionNumber').textContent = `Frage: ${total + 1}`; // Zeigt die Frage entsprechend ihrer ursprünglichen Position
+      
+      // Use the original question index to show the correct question number
+      const originalIndex = originalIndexes[total];
+      document.getElementById('questionNumber').textContent = `Frage: ${originalIndex}`; // Zeigt die Frage entsprechend ihrer ursprünglichen Position im Code an.
+      
     } else {
       showResult();
     }

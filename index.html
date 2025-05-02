@@ -61,6 +61,25 @@
       margin: 20px auto;
       display: block;
     }
+    .list-container {
+      max-height: 300px;
+      overflow-y: auto;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .question-list {
+      text-align: left;
+      padding: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
   </style>
 </head>
 <body>
@@ -79,6 +98,7 @@
     <h2 id="question">Frage wird geladen...</h2>
     <button onclick="answer(true)">Richtig</button>
     <button onclick="answer(false)">Falsch</button>
+    <button onclick="showQuestionList()">Vollständige Frageliste</button>
   </div>
 
   <!-- Auswertung -->
@@ -87,6 +107,23 @@
     <canvas id="chart" width="250" height="250"></canvas>
     <p id="summary"></p>
     <button onclick="restartSession()">Wiederholung starten</button>
+  </div>
+
+  <!-- Vollständige Frageliste -->
+  <div id="questionList" class="card" style="display:none;">
+    <h2>Vollständige Frageliste</h2>
+    <div class="list-container">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Frage</th>
+          </tr>
+        </thead>
+        <tbody id="questionListContent"></tbody>
+      </table>
+    </div>
+    <button onclick="startSession()">Quiz starten</button>
   </div>
 </div>
 
@@ -460,10 +497,10 @@
   { q: "Fuchs abbalgen, wie geht das bei der Lunte und wie macht man das?", a: true },
   { q: "Was bedeutet die Anzeige 2,3 DD?", a: true }
 ];
-
   let correct = 0;
   let total = 0;
   let sessionQuestions = [];
+  let completedQuestions = [];
 
   function checkPassword() {
     const input = document.getElementById('password').value;
@@ -479,7 +516,7 @@
   function startSession() {
     correct = 0;
     total = 0;
-    sessionQuestions = [...allQuestions];
+    sessionQuestions = allQuestions.filter(q => !completedQuestions.includes(q));
     shuffleArray(sessionQuestions);
     sessionQuestions = sessionQuestions.slice(0, 30);
     loadNext();
@@ -498,6 +535,7 @@
   function answer(userAnswer) {
     const currentQuestion = sessionQuestions[total];
     if (currentQuestion.a === userAnswer) correct++;
+    completedQuestions.push(currentQuestion);
     total++;
     loadNext();
   }
@@ -547,7 +585,22 @@
     startSession();
   }
 
-  // Hilfsfunktion zum Mischen
+  function showQuestionList() {
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('questionList').style.display = 'block';
+    
+    let questionListContent = '';
+    allQuestions.forEach((question, index) => {
+      questionListContent += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${question.q}</td>
+        </tr>`;
+    });
+
+    document.getElementById('questionListContent').innerHTML = questionListContent;
+  }
+
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));

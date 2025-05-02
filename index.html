@@ -39,6 +39,7 @@
       border-radius: 8px;
       background-color: #3e8e41;
       color: white;
+      cursor: pointer;
     }
     button:nth-of-type(2) {
       background-color: #d9534f;
@@ -60,27 +61,21 @@
       margin: 20px auto;
       display: block;
     }
-    select {
-      padding: 10px;
-      font-size: 1rem;
-      border-radius: 6px;
-      margin-top: 20px;
-    }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <!-- Passwort -->
+  <!-- Passwortabfrage -->
   <div id="login" class="card">
     <h2>Passwort eingeben</h2>
     <input type="password" id="password" placeholder="Passwort">
     <button onclick="checkPassword()">Einloggen</button>
   </div>
 
-  <!-- Quiz -->
+  <!-- Karteikarten -->
   <div id="quiz" class="card" style="display:none;">
-    <div id="counter">Frage 0 von 30 | Richtig: 0</div>
+    <div id="counter">Frage 0 von 30</div>
     <h2 id="question">Frage wird geladen...</h2>
     <button onclick="answer(true)">Richtig</button>
     <button onclick="answer(false)">Falsch</button>
@@ -91,10 +86,7 @@
     <h2>Auswertung</h2>
     <canvas id="chart" width="250" height="250"></canvas>
     <p id="summary"></p>
-    <select id="repeatSession" onchange="restartSession()">
-      <option value="">Wiederholung starten</option>
-      <option value="repeat">Wiederholen</option>
-    </select>
+    <button onclick="restartSession()">Wiederholung starten</button>
   </div>
 </div>
 
@@ -500,7 +492,7 @@
     }
     const currentQuestion = sessionQuestions[total];
     document.getElementById('question').textContent = currentQuestion.q;
-    document.getElementById('counter').textContent = `Frage ${total + 1} von 30 | Richtig: ${correct}`;
+    document.getElementById('counter').textContent = `Frage ${total + 1} von 30`;
   }
 
   function answer(userAnswer) {
@@ -518,12 +510,14 @@
     document.getElementById('summary').textContent =
       `Du hast ${correct} von 30 Fragen richtig beantwortet (${percent}%).`;
 
-    const ctx = document.getElementById('chart').getContext('2d');
+    const canvas = document.getElementById('chart');
+    const ctx = canvas.getContext('2d');
     const correctAngle = (correct / 30) * 2 * Math.PI;
 
-    ctx.clearRect(0, 0, 250, 250);
+    // Canvas zurücksetzen
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Grün = richtig
+    // Richtig (grün)
     ctx.beginPath();
     ctx.fillStyle = '#4caf50';
     ctx.moveTo(125, 125);
@@ -531,22 +525,26 @@
     ctx.lineTo(125, 125);
     ctx.fill();
 
-    // Rot = falsch
+    // Falsch (rot)
     ctx.beginPath();
     ctx.fillStyle = '#f44336';
     ctx.moveTo(125, 125);
     ctx.arc(125, 125, 100, correctAngle, 2 * Math.PI);
     ctx.lineTo(125, 125);
     ctx.fill();
+
+    // Prozentanzeige in der Mitte
+    ctx.fillStyle = percent >= 75 ? "#28a745" : "#dc3545";  // Grün, wenn > 75%, sonst Rot
+    ctx.font = "bold 24px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(`${percent}%`, 125, 125);
   }
 
   function restartSession() {
-    const selected = document.getElementById('repeatSession').value;
-    if (selected === 'repeat') {
-      document.getElementById('result').style.display = 'none';
-      document.getElementById('quiz').style.display = 'block';
-      startSession();
-    }
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+    startSession();
   }
 
   // Hilfsfunktion zum Mischen

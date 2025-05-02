@@ -118,7 +118,7 @@
 
   <!-- Vollständige Frageliste Seite -->
   <div id="questionListPage" class="fullscreen-container">
-    <button onclick="startSession()">Quiz starten</button>
+    <button onclick="startQuizFromList()">Quiz starten</button>
     <h2>Vollständige Frageliste</h2>
     <div class="list-container">
       <table>
@@ -166,7 +166,7 @@
     { q: "Darf die Bache mit Frischlingen ganzjährig bejagt werden?", a: false },
     { q: "Gehört der Waschbär zum Haarwild?", a: true },
     { q: "Hat der Feldhase ein Winterfell?", a: false },
-    { q: "Sind Schnepfen 1246Zugvögel?", a: true }
+    { q: "Sind Schnepfen Zugvögel?", a: true }
   ];
 
   let correct = 0;
@@ -286,7 +286,6 @@
       [array[i], array[j]] = [array[j], array[i]];
     }
   }
-
 </script>
 
 </body>

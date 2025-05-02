@@ -15,7 +15,7 @@
             margin: 0;
         }
 
-        .card {
+        .card, .summary {
             background-color: white;
             border-radius: 10px;
             padding: 30px;
@@ -55,28 +55,56 @@
         .btn:hover {
             background-color: #0056b3;
         }
+
+        .summary h2 {
+            margin-bottom: 20px;
+        }
+
+        .summary p {
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
-    <div class="card">
+    <div class="card" id="quiz-card">
         <div class="header" id="card-header">Lade Frage...</div>
         <div class="question" id="card-question">...</div>
         <div class="buttons">
-            <button class="btn" onclick="nextCard()">Richtig</button>
-            <button class="btn" onclick="nextCard()">Falsch</button>
+            <button class="btn" onclick="submitAnswer(true)">Richtig</button>
+            <button class="btn" onclick="submitAnswer(false)">Falsch</button>
         </div>
     </div>
 
+    <div class="summary" id="result-card" style="display:none;">
+        <h2>Auswertung</h2>
+        <p id="correct-count"></p>
+        <p id="incorrect-count"></p>
+    </div>
+
     <script>
-        const questions = [
-            { header: "Schonzeit für Rehwild", question: "Wann beginnt die Schonzeit für Rehböcke?" },
-            { header: "Kaliber für Rehwild", question: "Ist .222 Remington für Rehwild zugelassen?" },
-            { header: "Energieanforderung", question: "Braucht man mindestens 1000 Joule für Rehwild?" },
-            { header: "Raubwild", question: "Zählt der Fuchs zum Raubwild?" },
-            { header: "Jagdarten", question: "Ist die Drückjagd eine Form der Bewegungsjagd?" },
-            { header: "Eulen", question: "Ist der Raufußkauz die kleinste Eule Deutschlands?" },
-            // Füge hier beliebig viele Karten hinzu
+        const allQuestions = [
+            { header: "Schonzeit", question: "Hat der Rehbock im Januar Schonzeit?", correct: true },
+            { header: "Energie", question: "Sind 950 Joule ausreichend für Rehwild?", correct: false },
+            { header: "Kaliber", question: ".222 Rem ist für Rehwild erlaubt?", correct: true },
+            { header: "Fuchs", question: "Der Fuchs ist ein Pflanzenfresser?", correct: false },
+            { header: "Raufußkauz", question: "Der Raufußkauz ist die kleinste Eule Deutschlands?", correct: false },
+            { header: "Uhu", question: "Der Uhu ist die größte Eule Deutschlands?", correct: true },
+            { header: "Waffen", question: "Zentralfeuerpatronen sind bei der Jagd unzulässig?", correct: false },
+            { header: "Drückjagd", question: "Die Drückjagd ist eine Form der Bewegungsjagd?", correct: true },
+            { header: "Jagdrecht", question: "Das Jagdrecht ist an das Grundeigentum gebunden?", correct: true },
+            { header: "Patronen", question: "Eine Randfeuerpatrone ist keine Zentralfeuerpatrone?", correct: true },
+            { header: "Wildschwein", question: "Frischlinge haben immer schwarze Streifen?", correct: false },
+            { header: "Fasan", question: "Fasane gehören zum Federwild?", correct: true },
+            { header: "Schonzeit", question: "Rehböcke dürfen ganzjährig bejagt werden?", correct: false },
+            { header: "Munition", question: "Bleifreie Munition ist in Deutschland verboten?", correct: false },
+            // ... (füge hier weitere Fragen ein, bis du auf mindestens 30 kommst)
         ];
+
+        const questionCount = 30;
+        let shuffled = shuffle([...allQuestions]).slice(0, questionCount);
+        let currentIndex = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -86,25 +114,36 @@
             return array;
         }
 
-        let shuffled = shuffle([...questions]);
-        let currentIndex = 0;
-
         function showCard(index) {
             const card = shuffled[index];
             document.getElementById('card-header').innerText = card.header;
             document.getElementById('card-question').innerText = card.question;
         }
 
-        function nextCard() {
+        function submitAnswer(userChoice) {
+            const current = shuffled[currentIndex];
+            if (userChoice === current.correct) {
+                correctAnswers++;
+            } else {
+                incorrectAnswers++;
+            }
+
             currentIndex++;
             if (currentIndex >= shuffled.length) {
-                shuffled = shuffle([...questions]);
-                currentIndex = 0;
+                showResults();
+            } else {
+                showCard(currentIndex);
             }
-            showCard(currentIndex);
         }
 
-        // Start mit erster Karte
+        function showResults() {
+            document.getElementById('quiz-card').style.display = 'none';
+            document.getElementById('result-card').style.display = 'block';
+            document.getElementById('correct-count').innerText = `Richtige Antworten: ${correctAnswers}`;
+            document.getElementById('incorrect-count').innerText = `Falsche Antworten: ${incorrectAnswers}`;
+        }
+
+        // Start
         window.onload = () => {
             showCard(currentIndex);
         };

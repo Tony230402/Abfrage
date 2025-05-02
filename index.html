@@ -103,9 +103,10 @@
     <h2 id="question">Frage wird geladen...</h2>
     <button onclick="answer(true)">Richtig</button>
     <button onclick="answer(false)">Falsch</button>
-    <!-- Vollständige Frageliste Button nur im Quiz-Bereich -->
-    <button id="showFullListBtn" onclick="showFullList()">Vollständige Frageliste</button>
   </div>
+
+  <!-- Vollständige Frageliste Button außerhalb der Karteikarten -->
+  <button id="showFullListBtn" onclick="showFullList()" style="display:none;">Vollständige Frageliste</button>
 
   <!-- Auswertung -->
   <div id="result" class="card" style="display:none;">
@@ -165,7 +166,7 @@
     { q: "Darf die Bache mit Frischlingen ganzjährig bejagt werden?", a: false },
     { q: "Gehört der Waschbär zum Haarwild?", a: true },
     { q: "Hat der Feldhase ein Winterfell?", a: false },
-    { q: "Sind SchnepfenFJJJK Zugvögel?", a: true }
+    { q: "Sind Schnepfen 1246Zugvögel?", a: true }
   ];
 
   let correct = 0;
@@ -178,7 +179,7 @@
     if (input === correctPassword) {
       document.getElementById('login').style.display = 'none';
       document.getElementById('quiz').style.display = 'block';
-      document.getElementById('showFullListBtn').style.display = 'block';
+      document.getElementById('showFullListBtn').style.display = 'block'; // Zeige den Button
       startSession();
     } else {
       alert("Falsches Passwort.");
